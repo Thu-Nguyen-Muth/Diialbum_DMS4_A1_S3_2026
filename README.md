@@ -10,7 +10,6 @@ Diialbum/
 ├── js/app.js         all features (album, layers, drawing, stickers, weather, music, export…)
 └── assets/
     ├── favicon.svg   tab icon
-    └── preview.png   screenshot of the app
 ```
 
 ## Good to know
