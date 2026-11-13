@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diialbum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link id="fontLink" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Dancing+Script:wght@400;700&family=Patrick+Hand&family=Homemade+Apple&family=Nunito:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+</head>
+<body>
+<div class="app">
+  <!-- LEFT PANEL -->
+  <aside class="panel left">
+    <div class="brand">
+      <div class="logo">D</div>
+      <div><div class="title">Diialbum</div><div class="sub" data-i18n="tagline">little memories, kept softly</div></div>
+    </div>
+    <section class="card">
+      <div class="card-h"><span data-i18n="album">Album</span><button class="mini" id="newAlbum" data-i18n="newAlbum" data-pre="+ ">+ Create new album</button></div>
+      <div id="albums"></div>
+      <div class="hint" data-i18n="renameHint"></div>
+    </section>
+    <section class="card grow">
+      <div class="card-h"><span data-i18n="layer">Layer</span><span class="pill" id="layerPage">Page 1</span></div>
+      <div id="layers"></div>
+      <div class="hint" data-i18n="layerHint"></div>
+    </section>
+    <section class="card">
+      <div class="card-h"><span data-i18n="shortcuts">Shortcuts</span></div>
+      <div class="keys">
+        <kbd>Ctrl Z</kbd><span data-i18n="kUndo"></span>
+        <kbd>Ctrl ⇧ Z</kbd><span data-i18n="kRedo"></span>
+        <kbd>Del / X</kbd><span data-i18n="kDelete"></span>
+        <kbd>M</kbd><span data-i18n="kSound"></span>
+        <kbd>W A S D</kbd><span data-i18n="kMove"></span>
+        <kbd>← →</kbd><span data-i18n="kTurn"></span>
+        <kbd>B / E</kbd><span data-i18n="kDraw"></span>
+        <kbd>L</kbd><span data-i18n="kLine"></span>
+        <kbd>C</kbd><span data-i18n="kCrop"></span>
+        <kbd>R</kbd><span data-i18n="kRotate"></span>
+        <kbd>⇧ Click / Ctrl A</kbd><span data-i18n="kMulti"></span>
+        <kbd>Ctrl G / Ctrl ⇧ G</kbd><span data-i18n="kGroup"></span>
+      </div>
+    </section>
+  </aside>
+
+  <!-- CENTER -->
+  <main class="stage" id="stage">
+    <canvas id="sky"></canvas>
+    <div class="topbar">
+      <div class="wx">
+        <span class="wxi" id="wxIcon">☀️</span>
+        <select id="citySel" data-i18n-title="location"></select>
+        <span class="wxt" id="wxText">…</span>
+        <select id="sceneSel" data-i18n-title="sceneT"></select>
+      </div>
+      <div class="atitle" id="albumTitle">Album 1</div>
+      <div class="tb">
+        <button id="undoBtn" data-i18n-title="undoT">↶</button>
+        <button id="redoBtn" data-i18n-title="redoT">↷</button>
+      </div>
+    </div>
+    <div class="bookArea" id="bookArea">
+      <div id="cropBar">
+        <button data-r="0" class="on" data-i18n="free">Free</button><button data-r="1">1:1</button><button data-r="1.3333">4:3</button><button data-r="0.75">3:4</button><button data-r="1.7778">16:9</button>
+        <span class="sep"></span>
+        <button class="cancel" id="cropCancel" data-i18n="cancel" data-pre="✕ "></button><button class="ok" id="cropApply" data-i18n="apply" data-pre="✓ "></button>
+      </div>
+      <div id="bookBox">
+        <div id="scaler">
+          <div class="cover"></div>
+          <div class="stack"></div>
+          <div class="page" id="page"></div>
+        </div>
+        <div class="edge l"></div><div class="edge r"></div>
+      </div>
+    </div>
+    <div class="pager" id="pager"></div>
+  </main>
+
+  <!-- RIGHT PANEL -->
+  <aside class="panel right">
+    <div class="quick">
+      <div class="langseg" id="langSeg" data-i18n-title="language"></div>
+      <button class="qbtn" id="soundBtn" title="Sound on / off (M)"></button>
+      <button class="qbtn" id="themeBtn" title="Light / dark theme"></button>
+    </div>
+    <section class="card" id="auth"></section>
+
+    <section class="card">
+      <div class="card-h"><span data-i18n="photo">Photo</span></div>
+      <button class="btn ghost" id="addPhoto" data-i18n="addPhoto" data-pre="+ "></button>
+      <button class="btn ghost" id="cropBtn" style="margin-top:6px" disabled data-i18n="cropBtn" data-pre="✂ "></button>
+      <div id="photoStyle">
+        <label class="lbl" data-i18n="photoStyle"></label>
+        <div class="fxgrid" id="fxGrid"></div>
+        <div class="row2" style="margin-top:8px"><span class="mini-lbl" data-i18n="strength"></span><input type="range" id="fxAmt" min="0" max="100" value="100"><span class="pill" id="fxAmtVal">100</span></div>
+        <label class="lbl" data-i18n="tintLbl"></label>
+        <div class="chgcolor"><input type="color" id="tintColor" value="#c4836f" data-i18n-title="tintCustom"><button id="tintOff" data-i18n="fx_none"></button></div>
+        <div class="hint" data-i18n="tintHint"></div>
+        <label class="lbl" data-i18n="frame"></label>
+        <div class="framegrid" id="frameGrid"></div>
+      </div>
+      <div class="hint" id="fxHint" data-i18n="selectPhotoStyle"></div>
+      <div class="drop" id="stickerZone">
+        <div class="dz-ico">✿</div>
+        <div><b data-i18n="createSticker"></b></div>
+        <div class="hint" id="stickerHint" data-i18n="stickerHint"></div>
+      </div>
+    </section>
+
+
+    <section class="card">
+      <div class="card-h"><span data-i18n="text">Text</span><span class="pill" id="textTarget">New text</span></div>
+      <button class="btn" id="addText" data-i18n="addText" data-pre="+ "></button>
+      <label class="lbl" data-i18n="size"></label>
+      <div class="chips" id="sizeChips">
+        <button data-size="12">12</button><button data-size="16">16</button><button data-size="32">32</button><button data-size="48">48</button>
+        <input type="number" id="sizeCustom" min="6" max="300" data-i18n-title="customSize" placeholder="px">
+      </div>
+      <label class="lbl" data-i18n="colorStyle"></label>
+      <div class="row2 tstyle">
+        <input type="color" id="textColor" value="#6b4a42" data-i18n-title="textColor">
+        <button class="sty" data-sty="bold" data-i18n-title="bold"><b>B</b></button>
+        <button class="sty" data-sty="italic" data-i18n-title="italic"><i>I</i></button>
+        <button class="sty" data-sty="underline" data-i18n-title="underline"><u>U</u></button>
+        <span class="vsep"></span>
+        <button class="sty aln" data-al="left" data-i18n-title="alignLeft"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 6h16M4 10h10M4 14h16M4 18h10"/></svg></button>
+        <button class="sty aln" data-al="center" data-i18n-title="alignCenter"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 6h16M7 10h10M4 14h16M7 18h10"/></svg></button>
+        <button class="sty aln" data-al="right" data-i18n-title="alignRight"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 6h16M10 10h10M4 14h16M10 18h10"/></svg></button>
+      </div>
+      <label class="lbl" data-i18n="font"></label>
+      <div class="fonts" id="fontChips"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-h"><span data-i18n="draw">Draw</span><span class="pill" id="drawState">Off</span></div>
+      <div class="tools" id="drawTools"></div>
+      <label class="lbl" data-i18n="color"></label>
+      <div class="swatches" id="drawSwatches"></div>
+      <label class="lbl" data-i18n="size"></label>
+      <div class="row2"><input type="range" id="drawSize" min="1" max="40" value="6"><span class="pill" id="drawSizeVal">6</span></div>
+      <div class="hint" data-i18n="drawHint"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-h"><span data-i18n="line">Line</span><span class="pill" id="lineTarget">New line</span></div>
+      <button class="btn ghost" id="lineBtn">✎ Draw line (L)</button>
+      <label class="lbl" data-i18n="colorWidth"></label>
+      <div class="row2"><input type="color" id="lineColor" value="#c4836f" data-i18n-title="lineColor"><input type="range" id="lineWidth" min="1" max="24" value="4" data-i18n-title="lineWidth"><span class="pill" id="lineWidthVal">4</span></div>
+      <label class="lbl" data-i18n="style"></label>
+      <div class="seg full" id="lineDash"><button data-v="solid" data-i18n="solid"></button><button data-v="dashed" data-i18n="dashed"></button><button data-v="dotted" data-i18n="dotted"></button></div>
+      <label class="lbl" data-i18n="start"></label><div class="capgrid" id="capStart"></div>
+      <label class="lbl" data-i18n="end"></label><div class="capgrid" id="capEnd"></div>
+      <div class="hint" data-i18n="lineHint"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-h"><span data-i18n="stickers">Stickers</span></div>
+      <div class="mkstk"><input type="text" id="stkName" maxlength="40" data-i18n-ph="stkNamePh" autocomplete="off"><button id="stkMake" data-i18n-title="stkCreate">+</button></div>
+      <div class="hint" style="margin:6px 0 10px" data-i18n="stkHint"></div>
+      <div class="tabs" id="palTabs"><button data-t="stk" class="on" data-i18n="stickers"></button><button data-t="emo" data-i18n="emoji"></button><button data-t="mine" data-i18n="mine"></button></div>
+      <div class="pal" id="palStk"></div>
+      <div class="pal emoji" id="palEmo" style="display:none"></div>
+      <div class="pal" id="palMine" style="display:none"></div>
+      <div class="hint" data-i18n="palHint"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-h"><span data-i18n="export">Export</span></div>
+      <div class="row"><span data-i18n="range"></span><select id="expScope"><option value="page" data-i18n="currentPage"></option><option value="album" data-i18n="wholeAlbum"></option></select></div>
+      <div class="row"><span data-i18n="format"></span><select id="expFmt"><option value="png">PNG</option><option value="jpeg">JPEG</option><option value="svg">SVG</option><option value="pdf">PDF</option></select></div>
+      <button class="btn" id="exportBtn" data-i18n="download" data-pre="⬇ "></button>
+    </section>
+
+    <section class="card">
+      <div class="card-h"><span data-i18n="delete">Delete</span></div>
+      <button class="trash" id="trashBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        <span data-i18n="deleteSelected"></span>
+      </button>
+      <div class="hint" data-i18n="trashHint"></div>
+    </section>
+  </aside>
+</div>
+<div id="toast"></div>
+<svg width="0" height="0" style="position:absolute;width:0;height:0" aria-hidden="true"><defs id="fxDefs"></defs></svg>
+<input type="file" id="photoInput" accept="image/*" multiple hidden>
+<input type="file" id="stickerInput" accept="image/*" multiple hidden>
+
+<script src="js/app.js"></script>
+</body>
+</html>
